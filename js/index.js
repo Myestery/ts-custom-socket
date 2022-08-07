@@ -28,22 +28,19 @@ var SDK = /** @class */ (function () {
                     content: "Hello, we received your message with id " + message.id,
                     id: uuidv4(),
                     sentAt: new Date(),
-                });
+                }, socket);
                 callback(message);
             });
         });
     };
-    SDK.prototype.send = function (event, data) {
-        var _this = this;
+    SDK.prototype.send = function (event, data, socket) {
         var message = {
             content: data,
             id: uuidv4(),
             sentAt: new Date(),
         };
-        this.io.on("connection", function (socket) {
-            socket.emit(event, message);
-            _this.logMessage("SEND", message);
-        });
+        socket.emit(event, message);
+        this.logMessage("SEND", message);
     };
     SDK.prototype.logMessage = function (type, message) {
         var content = typeof message.content === "string"

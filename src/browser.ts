@@ -1,11 +1,11 @@
 import { Message, MessageContent } from "./types/message";
+import { Socket, io } from "socket.io-client";
 
 import { EventEnum } from "./types/events";
-import { io } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
 
 export class ClientSDK {
-  public io: any;
+  public io: Socket;
   public socketMessageUl: HTMLElement;
   constructor(url: string) {
     this.io = io(url);
@@ -45,6 +45,9 @@ ${type}: ${content}`;
     // append to the ul socketMessageUl
     this.socketMessageUl.innerHTML += `<li>${logMessage}</li>`;
   }
+  public disconnect() {
+    this.io.disconnect();
+  }
 }
 declare global {
   interface Window {
@@ -52,3 +55,6 @@ declare global {
   }
 }
 window.sdk = new ClientSDK("http://localhost:3000");
+window.sdk.on("message", (message: Message) => {
+  console.log(message);
+});
